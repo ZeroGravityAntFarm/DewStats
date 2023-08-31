@@ -1,31 +1,33 @@
-from flask import Flask, request, jsonify
-import json
+from fastapi import FastAPI
+from api.api_v1.api import api_router
+from fastapi.staticfiles import StaticFiles
+from db.models import models
+from db.session import engine
+from fastapi.middleware.cors import CORSMiddleware
+from internal.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from fastapi_pagination import add_pagination
 
-app = Flask(__name__)
+models.Base.metadata.create_all(bind=engine)
 
+app = FastAPI()
+app.include_router(api_router)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+add_pagination(app)
 
-@app.route("/stats", methods=["GET"])
-def yo_momma():
-    return "<p>Shut Up Nerd</p>"
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+if __name__ == "__main__":
+    # Use this for debugging purposes only
+    import uvicorn
 
-@app.route("/stats/submit", methods=["POST"])
-def lil_staty():
-    staty = request.json
-
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$ /stats $$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    print(staty)
-
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-
-@app.route("/playersinfo", methods=["POST"])
-def player_info():
-    ur_garbage_kd = request.json
-
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$ /playersinfo $$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    print(ur_garbage_kd)
-
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
