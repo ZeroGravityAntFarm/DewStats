@@ -24,7 +24,7 @@ def get_db():
         db.close()
 
 
-#Returns dynamically built view for maps. Only way to get meta tags working (that I know of).
+#Endpoint to catch game stats
 @router.post("/stats")
 async def post_stats(request: Request, db: Session = Depends(get_db)):
     stats = controller.create_stats(db, stats=request.json())

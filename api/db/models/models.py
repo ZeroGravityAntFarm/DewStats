@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, BigInteger, String, LargeBinary, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 from db.session import Base
 
@@ -7,7 +7,9 @@ from db.session import Base
 class User(Base):
     __tablename__ = "users"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
+    player_uid = Column(Integer, ForeignKey='player.playerUID')
     name = Column(String(128), unique=True, index=True)
     email = Column(String(128), unique=True, index=True)
     role = Column(String(64), unique=False, index=True)
@@ -16,13 +18,19 @@ class User(Base):
     prof_views = Column(Integer, index=True)
     about = Column(String(1200))
 
+
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+
+    #Relationships
+    player = relationship("Player", backref=backref("users", uselist=False))
 
 
 class Server(Base):
     __tablename__ = "servers"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
     serverName = Column(String(128), index=True)
     serverVersion = Column(String(1200))
@@ -30,13 +38,18 @@ class Server(Base):
     port = Column(Integer, index=True)
     hostPlayer = Column(String(128), index=True)
 
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
 
+    #Relationships
+    games = relationship("Game", back_populates="servers")
 
 class Game(Base):
     __tablename__ = "games"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
+    server_id = Column("Integer", ForeignKey='servers.id')
     sprintEnabled = Column(Boolean)
     sprintUnlimitedEnabled = Column(Boolean)
     maxPlayers = Column(Integer)
@@ -46,22 +59,29 @@ class Game(Base):
     variantType = Column(String(128), index=True)
     teamGame = Column(Boolean, index=True)
     
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
 
-    
-class Players(Base):
-    __tablename__ = "players"
+    #Relationships
+    server = relationship("Server", back_populates="games")
+    players = relationship("Player", secondary="players_link", back_populates="games")
 
-    id = Column(Integer, primary_key=True, index=True)
-    gameId = Column(Integer, index=True)
-    playerId = Column(Integer)
+#Link table required for the many-to-many relationship between games and player    
+class PlayersLink(Base):
+    __tablename__ = "players_link"
+
+    #Columns
+    gameId = Column(Integer, ForeignKey=('games.id'), primary_key=True)
+    playerId = Column(Integer, ForeignKey=('player.id'), primary_key=True)
     
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
 
 
 class Player(Base):
     __tablename__ = "player"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerName = Column(String(128), index=True)
     clientName = Column(String(64), index=True)
@@ -72,15 +92,20 @@ class Player(Base):
     playerUID = Column(String(128))
     primaryColor = Column(String(64))
 
-
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
+
+    #Relationships
+    games = relationship("Game", secondary="players_link", back_populates="players")
+
 
 
 class PlayerGameStats(Base):
     __tablename__ = "playergamestats"
     
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
-    playerId = Column(Integer)
+    playerId = Column(Integer, ForeignKey('player.id'))
     gameId = Column(Integer)
     score = Column(Integer)
     kills = Column(Integer)
@@ -98,26 +123,37 @@ class PlayerGameStats(Base):
     timeControllingHill = Column(Integer)
     playerVersusPlayerKills = Column(String(64))
 
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
+
+    #Relationships
+    player = relationship("Player")
+
 
 
 class PlayerMedals(Base):
     __tablename__  = "playermedals"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
-    playerId = Column(Integer)
+    playerId = Column(Integer, ForeignKey('player.id'))
     gameId = Column(Integer)
     medalName = Column(String(64))
     count = Column(Integer)
 
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
+
+    #Relationships
+    player = relationship("Player")
 
 
 class PlayerWeapons(Base):
     __tablename__ = "playerweapons"
 
+    #Columns
     id = Column(Integer, primary_key=True, index=True)
-    playerId = Column(Integer)
+    playerId = Column(Integer, ForeignKey('player.id'))
     gameId = Column(Integer)
     weaponName = Column(String(64))
     weaponIndex = Column(Integer)
@@ -127,4 +163,8 @@ class PlayerWeapons(Base):
     suicidesWith = Column(Integer)
     headShotsWith = Column(Integer)
 
+    #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
+
+    #Relationships
+    player = relationship("Player")
