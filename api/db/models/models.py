@@ -66,6 +66,7 @@ class Game(Base):
     server = relationship("Server", back_populates="games")
     players = relationship("Player", secondary="players_link", back_populates="games")
 
+
 #Link table required for the many-to-many relationship between games and player    
 class PlayersLink(Base):
     __tablename__ = "players_link"
@@ -106,7 +107,7 @@ class PlayerGameStats(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer)
+    gameId = Column(Integer, ForeignKey('game.id'))
     score = Column(Integer)
     kills = Column(Integer)
     assists = Column(Integer)
@@ -128,6 +129,7 @@ class PlayerGameStats(Base):
 
     #Relationships
     player = relationship("Player")
+    game = relationship("Game")
 
 
 
@@ -137,7 +139,7 @@ class PlayerMedals(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer)
+    gameId = Column(Integer, ForeignKey('game.id'))
     medalName = Column(String(64))
     count = Column(Integer)
 
@@ -146,6 +148,7 @@ class PlayerMedals(Base):
 
     #Relationships
     player = relationship("Player")
+    game = relationship("Game")
 
 
 class PlayerWeapons(Base):
@@ -154,7 +157,7 @@ class PlayerWeapons(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer)
+    gameId = Column(Integer, ForeignKey('game.id'))
     weaponName = Column(String(64))
     weaponIndex = Column(Integer)
     kills = Column(Integer)
@@ -168,3 +171,4 @@ class PlayerWeapons(Base):
 
     #Relationships
     player = relationship("Player")
+    game = relationship("Game")
