@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from db.models import models
 from db.schemas import schemas
-from internal.auth import verify_password, get_password_hash
+from internal.auth import verify_password
 from datetime import datetime, timedelta
 from internal.auth import *
 from jose import jwt
@@ -114,3 +114,97 @@ def update_user_password(db: Session, userPassword: int, user: str):
     db.commit()
 
     return user
+
+
+#Create Match Stats
+def create_stats(db: Session, stats: str):
+    #Check if server record exist already (Not much unique data to go by here so we filter on name and player host)
+    server = db.query(models.Server).filter(models.Server.serverName == stats["serverName"].filter(models.Server.hostPlayer == stats["hostPlayer"])).first()
+
+    if not server:
+        #Create server record
+        server = models.Server(serverName=stats["serverName"], 
+                            serverVersion=stats["gameVersion"], 
+                            serverPort=stats["serverPort"], 
+                            port=stats["port"], 
+                            hostPlayer=stats["hostPlayer"])
+        db.add(server)
+        db.commit()
+
+    #Create match record
+    game = models.Game(server_id=server.id, 
+                       sprintEnabled=stats["game"]["sprintEnabled"], 
+                       sprintUnlimitedEnabled=stats["game"]["sprintUnlimitedEnabled"], 
+                       maxPlayers=stats["game"]["maxPlayers"], 
+                       mapName=stats["game"]["mapName"], 
+                       mapFile=stats["game"]["mapFile"], 
+                       variant=stats["game"]["variant"], 
+                       variantType=stats["game"]["variantType"], 
+                       teamGame=stats["game"]["teamGame"])
+    db.add(game)
+    db.commit()
+
+    #Iterate over players in match and create records for them if they don't already exist
+    for player in stats["players"]:
+        #Check if player exists already
+        player = db.query(models.Player).filter(models.Player.playerUID == player["uid"]).first()
+
+        if not player:
+            #Add player info
+            player = models.Player(playerName=player["name"],
+                                   clientName=player["clientName"],
+                                   serviceTag=player["serviceTag"],
+                                   playerIp=player["ip"],
+                                   team=player["team"],
+                                   playerIndex=player["playerIndex"],
+                                   playerUID=player["uid"],
+                                   primaryColor=player["primaryColor"],)
+        
+        db.add(player)
+        db.commit()
+
+        #Add player match stats
+        player_stats = models.PlayerGameStats(playerId=player.id, 
+                                              gameId=game.id, 
+                                              score=player["playerGameStats"]["score"], 
+                                              kills=player["playerGameStats"]["kills"], 
+                                              assists=player["playerGameStats"]["assists"], 
+                                              deaths=player["playerGameStats"]["deaths"], 
+                                              betrayals=player["playerGameStats"]["betrayals"], 
+                                              timeSpendAlive=player["playerGameStats"]["timeSpentAlive"], 
+                                              suicides=player["playerGameStats"]["suicides"], 
+                                              bestStreak=player["playerGameStats"]["bestStreak"])
+        
+        db.add(player_stats)
+        db.commit()
+
+        #Add player id and match id to link table
+        link_table = models.PlayersLink(gameId=game.id, playerId=player.id)
+
+        db.add(link_table)
+        db.commit()
+
+        #Iterate over medals earned for our player in recent match
+        for medal in player["playerMedals"]:
+            medal = models.PlayerMedals(playerId=player.id, 
+                                        gameId=game.id, 
+                                        medalName=medal["medalName"], 
+                                        count=medal["count"])
+
+            db.add(medal)
+            db.commit()
+
+        #Iterate over player weapons for recent match
+        for weapon in player["playerWeapons"]:
+            weapon = models.PlayerWeapons(playerId=player.id, 
+                                          gameId=game.id, 
+                                          weaponName=weapon["weaponName"], 
+                                          weaponIndex=weapon["weaponIndex"], 
+                                          kills=weapon["kills"], 
+                                          killedBy=weapon["killedBy"], 
+                                          betrayalsWith=weapon["betrayalsWith"], 
+                                          suicidesWith=weapon["suicidesWith"], 
+                                          headShotsWith=weapon["headshotsWith"])
+            
+            db.add(weapon)
+            db.commit()
