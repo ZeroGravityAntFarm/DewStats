@@ -9,7 +9,7 @@ from internal.limiter import limiter
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
+import json
 
 router = APIRouter()
 
@@ -27,7 +27,8 @@ def get_db():
 #Endpoint to catch game stats
 @router.post("/stats")
 async def post_stats(request: Request, db: Session = Depends(get_db)):
-    stats = controller.create_stats(db, stats=request.json())
+    match_request = await request.json()
+    stats = controller.create_stats(db, stats=match_request)
 
     if not stats:
         return HTTPException(status_code=500, detail="Failed to create stats")

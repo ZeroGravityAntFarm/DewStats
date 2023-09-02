@@ -4,11 +4,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 import os
 
+
+
 db_host = os.environ.get("DB_HOST")
 db_port = os.environ.get("DB_PORT")
 db_database = os.environ.get("DB_DATABASE")
 db_username = os.environ.get("DB_USERNAME")
 db_password = os.environ.get("DB_PASSWORD")
+
 
 SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://{}:{}@{}:{}/{}".format(db_username, db_password, db_host, db_port, db_database)
 

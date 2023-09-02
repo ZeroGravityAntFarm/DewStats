@@ -18,7 +18,7 @@ def get_db():
         db.close()
 
 
-@router.post("/users/", response_model=schemas.User)
+@router.post("/users/", response_model=schemas.UserRead)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     
     email = parseaddr(user.email)
@@ -83,7 +83,7 @@ def read_user_name(user_name: str, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.get("/me", response_model=schemas.User)
+@router.get("/me", response_model=schemas.UserRead)
 def get_me(user: str = Depends(get_current_user)):
     return user
 

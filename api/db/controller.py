@@ -119,7 +119,7 @@ def update_user_password(db: Session, userPassword: int, user: str):
 #Create Match Stats
 def create_stats(db: Session, stats: str):
     #Check if server record exist already (Not much unique data to go by here so we filter on name and player host)
-    server = db.query(models.Server).filter(models.Server.serverName == stats["serverName"].filter(models.Server.hostPlayer == stats["hostPlayer"])).first()
+    server = db.query(models.Server).filter(models.Server.serverName == stats["serverName"]).filter(models.Server.hostPlayer == stats["hostPlayer"]).first()
 
     if not server:
         #Create server record
@@ -132,7 +132,7 @@ def create_stats(db: Session, stats: str):
         db.commit()
 
     #Create match record
-    game = models.Game(server_id=server.id, 
+    game = models.Game(serverId=server.id, 
                        sprintEnabled=stats["game"]["sprintEnabled"], 
                        sprintUnlimitedEnabled=stats["game"]["sprintUnlimitedEnabled"], 
                        maxPlayers=stats["game"]["maxPlayers"], 
@@ -145,35 +145,36 @@ def create_stats(db: Session, stats: str):
     db.commit()
 
     #Iterate over players in match and create records for them if they don't already exist
-    for player in stats["players"]:
+    for playerData in stats["players"]:
         #Check if player exists already
-        player = db.query(models.Player).filter(models.Player.playerUID == player["uid"]).first()
-
+        player = db.query(models.Player).filter(models.Player.playerUID == playerData["uid"]).first()
+        
         if not player:
             #Add player info
-            player = models.Player(playerName=player["name"],
-                                   clientName=player["clientName"],
-                                   serviceTag=player["serviceTag"],
-                                   playerIp=player["ip"],
-                                   team=player["team"],
-                                   playerIndex=player["playerIndex"],
-                                   playerUID=player["uid"],
-                                   primaryColor=player["primaryColor"],)
-        
-        db.add(player)
-        db.commit()
+            player = models.Player(playerName=playerData["name"],
+                                   clientName=playerData["clientName"],
+                                   serviceTag=playerData["serviceTag"],
+                                   playerIp=playerData["ip"],
+                                   team=playerData["team"],
+                                   playerIndex=playerData["playerIndex"],
+                                   playerUID=playerData["uid"],
+                                   primaryColor=playerData["primaryColor"],)
+            
+            db.add(player)
+            db.commit()
+
 
         #Add player match stats
         player_stats = models.PlayerGameStats(playerId=player.id, 
                                               gameId=game.id, 
-                                              score=player["playerGameStats"]["score"], 
-                                              kills=player["playerGameStats"]["kills"], 
-                                              assists=player["playerGameStats"]["assists"], 
-                                              deaths=player["playerGameStats"]["deaths"], 
-                                              betrayals=player["playerGameStats"]["betrayals"], 
-                                              timeSpendAlive=player["playerGameStats"]["timeSpentAlive"], 
-                                              suicides=player["playerGameStats"]["suicides"], 
-                                              bestStreak=player["playerGameStats"]["bestStreak"])
+                                              score=playerData["playerGameStats"]["score"], 
+                                              kills=playerData["playerGameStats"]["kills"], 
+                                              assists=playerData["playerGameStats"]["assists"], 
+                                              deaths=playerData["playerGameStats"]["deaths"], 
+                                              betrayals=playerData["playerGameStats"]["betrayals"], 
+                                              timeAlive=playerData["playerGameStats"]["timeSpentAlive"], 
+                                              suicides=playerData["playerGameStats"]["suicides"], 
+                                              bestStreak=playerData["playerGameStats"]["bestStreak"])
         
         db.add(player_stats)
         db.commit()
@@ -185,7 +186,7 @@ def create_stats(db: Session, stats: str):
         db.commit()
 
         #Iterate over medals earned for our player in recent match
-        for medal in player["playerMedals"]:
+        for medal in playerData["playerMedals"]:
             medal = models.PlayerMedals(playerId=player.id, 
                                         gameId=game.id, 
                                         medalName=medal["medalName"], 
@@ -195,7 +196,7 @@ def create_stats(db: Session, stats: str):
             db.commit()
 
         #Iterate over player weapons for recent match
-        for weapon in player["playerWeapons"]:
+        for weapon in playerData["playerWeapons"]:
             weapon = models.PlayerWeapons(playerId=player.id, 
                                           gameId=game.id, 
                                           weaponName=weapon["weaponName"], 
@@ -208,3 +209,5 @@ def create_stats(db: Session, stats: str):
             
             db.add(weapon)
             db.commit()
+
+    return True

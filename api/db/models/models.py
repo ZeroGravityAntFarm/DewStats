@@ -9,7 +9,7 @@ class User(Base):
 
     #Columns
     id = Column(Integer, primary_key=True, index=True)
-    player_uid = Column(Integer, ForeignKey='player.playerUID')
+    player_uid = Column(String(128), ForeignKey('player.playerUID'))
     name = Column(String(128), unique=True, index=True)
     email = Column(String(128), unique=True, index=True)
     role = Column(String(64), unique=False, index=True)
@@ -49,7 +49,7 @@ class Game(Base):
 
     #Columns
     id = Column(Integer, primary_key=True, index=True)
-    server_id = Column("Integer", ForeignKey='servers.id')
+    serverId = Column("Integer", ForeignKey('servers.id'))
     sprintEnabled = Column(Boolean)
     sprintUnlimitedEnabled = Column(Boolean)
     maxPlayers = Column(Integer)
@@ -63,7 +63,7 @@ class Game(Base):
     time_created = Column(DateTime(timezone=True), default=func.now())
 
     #Relationships
-    server = relationship("Server", back_populates="games")
+    servers = relationship("Server", back_populates="games")
     players = relationship("Player", secondary="players_link", back_populates="games")
 
 
@@ -72,8 +72,8 @@ class PlayersLink(Base):
     __tablename__ = "players_link"
 
     #Columns
-    gameId = Column(Integer, ForeignKey=('games.id'), primary_key=True)
-    playerId = Column(Integer, ForeignKey=('player.id'), primary_key=True)
+    gameId = Column(Integer, ForeignKey('games.id'), primary_key=True)
+    playerId = Column(Integer, ForeignKey('player.id'), primary_key=True)
     
     #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
@@ -90,7 +90,7 @@ class Player(Base):
     playerIp = Column(String(1200))
     team = Column(Integer)
     playerIndex = Column(Integer)
-    playerUID = Column(String(128))
+    playerUID = Column(String(128), unique=True)
     primaryColor = Column(String(64))
 
     #Automatic Created/Updated datetime columns
@@ -107,7 +107,7 @@ class PlayerGameStats(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer, ForeignKey('game.id'))
+    gameId = Column(Integer, ForeignKey('games.id'))
     score = Column(Integer)
     kills = Column(Integer)
     assists = Column(Integer)
@@ -139,7 +139,7 @@ class PlayerMedals(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer, ForeignKey('game.id'))
+    gameId = Column(Integer, ForeignKey('games.id'))
     medalName = Column(String(64))
     count = Column(Integer)
 
@@ -157,12 +157,12 @@ class PlayerWeapons(Base):
     #Columns
     id = Column(Integer, primary_key=True, index=True)
     playerId = Column(Integer, ForeignKey('player.id'))
-    gameId = Column(Integer, ForeignKey('game.id'))
+    gameId = Column(Integer, ForeignKey('games.id'))
     weaponName = Column(String(64))
     weaponIndex = Column(Integer)
     kills = Column(Integer)
     killedBy = Column(Integer)
-    betraylsWith = Column(Integer)
+    betrayalsWith = Column(Integer)
     suicidesWith = Column(Integer)
     headShotsWith = Column(Integer)
 

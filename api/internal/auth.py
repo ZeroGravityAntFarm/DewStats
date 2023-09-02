@@ -25,7 +25,7 @@ def get_db():
     finally:
         db.close()
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> schemas.User:
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> schemas.UserRead:
     try:
         payload = jwt.decode(
             token, SECRET_KEY, algorithms=[ALGORITHM]

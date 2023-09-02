@@ -2,6 +2,16 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str = None
+
+
+class TokenData(BaseModel):
+    sub: str = None
+    exp: int = None
+
+
 class UserBase(BaseModel):
     name: str
     email: str
