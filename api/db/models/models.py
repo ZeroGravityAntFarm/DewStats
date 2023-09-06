@@ -92,6 +92,8 @@ class Player(Base):
     playerIndex = Column(Integer)
     playerUID = Column(String(128), unique=True)
     primaryColor = Column(String(64))
+    playerExp = Column(Integer)
+    playerRank = Column(Integer)
 
     #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())

@@ -42,13 +42,15 @@
         <div class="col-8">
             <ul class="nav nav-tabs pt-3" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
-                        type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Global Leader
+                    <button class="nav-link active" id="leader-board-tab" data-bs-toggle="tab"
+                        data-bs-target="#leader-board-tab-pane" type="button" role="tab"
+                        aria-controls="leader-board-tab-pane" aria-selected="true">Global Leader
                         Board</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane"
-                        type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Servers</button>
+                    <button class="nav-link" id="server-tab" data-bs-toggle="tab" data-bs-target="#server-tab-pane"
+                        type="button" role="tab" aria-controls="server-tab-pane" aria-selected="false"
+                        onclick="getServers()">Servers</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane"
@@ -56,9 +58,9 @@
                         Players</button>
                 </li>
             </ul>
-            <div class="tab-content pt-4 ps-5" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
-                    tabindex="0">
+            <div class="tab-content pt-4 ps-5" id="leader-board-tab-content">
+                <div class="tab-pane fade show active" id="leader-board-tab-pane" role="tabpanel"
+                    aria-labelledby="leader-board-tab" tabindex="0">
                     <table class="table table-bordered border-secondary border-opacity-25 text-center">
                         <thead>
                             <tr>
@@ -155,8 +157,32 @@
                     </table>
                 </div>
 
-                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab"
-                    tabindex="0">...</div>
+                <div class="tab-pane fade" id="server-tab-pane" role="tabpanel" aria-labelledby="server-tab"
+                    tabindex="0">
+                    <button type="button" class="btn btn-secondary" onclick="getServers()">Refresh</button>
+                    <table id="serverTable" data-sortable="true">
+                        <thead>
+                            <tr>
+                                <th data-field="name" data-halign="center" data-align="center" data-sortable="true">
+                                    Server</th>
+                                <th data-field="hostPlayer" data-halign="center" data-align="center"
+                                    data-sortable="true">Host</th>
+                                <th data-field="map" data-halign="center" data-align="center" data-sortable="true">Map
+                                </th>
+                                <th data-field="variant" data-halign="center" data-align="center" data-sortable="true">
+                                    Variant</th>
+                                <th data-field="variantType" data-halign="center" data-align="center"
+                                    data-sortable="true">Type</th>
+                                <th data-field="status" data-halign="center" data-align="center" data-sortable="true">
+                                    Status</th>
+                                <th data-field="numPlayers" data-halign="center" data-align="center"
+                                    data-sortable="true">Players</th>
+                                <th data-field="eldewritoVersion" data-halign="center" data-align="center"
+                                    data-sortable="true">Version</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
                 <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
                     tabindex="0">...</div>
                 <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab"
@@ -210,7 +236,7 @@
                 <div class="row p-4">
 
                     <div class="card mb-3">
-                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <img src="../content/maps/small/guardian.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -220,7 +246,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <img src="../content/maps/small/cyberdyne.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -230,7 +256,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <img src="../content/maps/small/shrine.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -240,7 +266,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <img src="../content/maps/small/bunkerworld.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -250,7 +276,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <img src="../content/maps/small/riverworld.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -274,3 +300,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
     crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script src="sb.js"></script>

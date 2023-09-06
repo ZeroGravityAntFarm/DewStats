@@ -56,6 +56,8 @@ class PlayerBase(BaseModel):
     playerIndex: int
     playerUID: str
     primaryColor: str
+    playerExp: int
+    playerRank: int
 
 
 class PlayerGameStatsBase(BaseModel):

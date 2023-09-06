@@ -116,6 +116,8 @@ def update_user_password(db: Session, userPassword: int, user: str):
     return user
 
 
+
+
 #Create Match Stats
 def create_stats(db: Session, stats: str):
     #Check if server record exist already (Not much unique data to go by here so we filter on name and player host)
@@ -158,7 +160,7 @@ def create_stats(db: Session, stats: str):
                                    team=playerData["team"],
                                    playerIndex=playerData["playerIndex"],
                                    playerUID=playerData["uid"],
-                                   primaryColor=playerData["primaryColor"],)
+                                   primaryColor=playerData["primaryColor"])
             
             db.add(player)
             db.commit()
