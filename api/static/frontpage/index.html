@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="Eldewrito Fileshare" property="og:title" />
-    <meta content="A fileshare for Eldewrito powered by zgaf.io" property="og:description" />
+    <meta content="Eldewrito Stat Aggregator" property="og:title" />
+    <meta content="A Stat Tracker for Eldewrito Powered by zgaf.io" property="og:description" />
     <meta content="https://fileshare.zgaf.io" property="og:url" />
     <meta content="https://fileshare.zgaf.io/content/halo.jpg" property="og:image" />
     <meta content="#43B581" data-react-helmet="true" name="theme-color" />
@@ -15,12 +15,13 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <title>Dewrito Share</title>
+    <title>Stat Tracker</title>
     <link href="frontend.css" rel="stylesheet">
 </head>
 
 <body>
-    <header class="navbar navbar-dark navbar-expand-lg sticky-top bg-dark flex-md-nowrap p-1">
+    <header class="navbar navbar-dark navbar-expand-lg sticky-top flex-md-nowrap p-1"
+        style="background-color: #010203;">
         <a class="navbar-brand col-md-0 col-lg-0 me-0 px-3" href="/">
             <img src="https://api.zgaf.io/static/content/default/eldorito.png" alt="eldorito"
                 style="width:30px;height:30px;">
@@ -47,11 +48,12 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane"
-                        type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
+                        type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Servers</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane"
-                        type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+                        type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Worst
+                        Players</button>
                 </li>
             </ul>
             <div class="tab-content pt-4 ps-5" id="myTabContent">
@@ -72,17 +74,82 @@
                             <tr>
                                 <td>Mark</td>
                                 <td>145</td>
-                                <td>@mdo</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
                             </tr>
                             <tr>
                                 <td>Jacob</td>
-                                <td>23543</td>
-                                <td>@fat</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
                             </tr>
                             <tr>
                                 <td>Larry the Bird</td>
-                                <td>32532</td>
-                                <td>@fat</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>Mark</td>
+                                <td>145</td>
+                                <td>57</td>
+                                <td>300</td>
+                                <td>91</td>
+                                <td>268</td>
                             </tr>
                         </tbody>
                     </table>
@@ -99,22 +166,103 @@
         </div>
 
         <div class="col-4 ps-5 pt-5">
-            <p class="h5 text-center">h5. Bootstrap heading</p>
-            <ul class="list-group list-group-horizontal ">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-            </ul>
-            <ul class="list-group list-group-horizontal-sm">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-            </ul>
-            <ul class="list-group list-group-horizontal-md">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-            </ul>
+            <p class="h5 text-center">Global Stats</p>
+            <div class="container text-center">
+
+                <div class="row p-4">
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Games Played
+
+                    </div>
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Total Kills
+
+                    </div>
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Flags Captured
+
+                    </div>
+                </div>
+
+                <div class="row p-4">
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Medals Issued
+
+                    </div>
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Zombies Killed
+
+                    </div>
+                    <div class="col fw-semibold">
+                        <div>1000</div>
+                        Killing Sprees
+
+                    </div>
+                </div>
+
+                <p class="h5 text-center pt-5">Recent Games</p>
+
+                <div class="row p-4">
+
+                    <div class="card mb-3">
+                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h6 class="card-title">Game Variant on Map Name</h6>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h6 class="card-title">Game Variant on Map Name</h6>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h6 class="card-title">Game Variant on Map Name</h6>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h6 class="card-title">Game Variant on Map Name</h6>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <img src="guardian.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h6 class="card-title">Game Variant on Map Name</h6>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
