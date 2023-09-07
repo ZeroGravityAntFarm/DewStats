@@ -159,7 +159,8 @@
 
                 <div class="tab-pane fade" id="server-tab-pane" role="tabpanel" aria-labelledby="server-tab"
                     tabindex="0">
-                    <button type="button" class="btn btn-secondary" onclick="getServers()">Refresh</button>
+                    <button type="button" class="btn btn-secondary" onclick="setInterval(getServers, 20000)">Auto
+                        Refresh</button>
                     <table id="serverTable" data-sortable="true">
                         <thead>
                             <tr>
@@ -236,7 +237,7 @@
                 <div class="row p-4">
 
                     <div class="card mb-3">
-                        <img src="../content/maps/small/guardian.png" class="card-img-top" alt="...">
+                        <img src="/content/maps/small/guardian.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -246,7 +247,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="../content/maps/small/cyberdyne.png" class="card-img-top" alt="...">
+                        <img src="/content/maps/small/cyberdyne.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -256,7 +257,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="../content/maps/small/shrine.png" class="card-img-top" alt="...">
+                        <img src="/content/maps/small/shrine.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -266,7 +267,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="../content/maps/small/bunkerworld.png" class="card-img-top" alt="...">
+                        <img src="/content/maps/small/bunkerworld.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -276,7 +277,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <img src="../content/maps/small/riverworld.png" class="card-img-top" alt="...">
+                        <img src="/content/maps/small/riverworld.png" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h6 class="card-title">Game Variant on Map Name</h6>
                             <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
@@ -301,4 +302,4 @@
     integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
-<script src="sb.js"></script>
+<script src="/js/sb.js"></script>

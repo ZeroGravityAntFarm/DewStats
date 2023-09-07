@@ -6,7 +6,7 @@ from internal.auth import verify_password
 from datetime import datetime, timedelta
 from internal.auth import *
 from jose import jwt
-from sqlalchemy import or_, desc, asc
+from sqlalchemy import or_, desc, asc, func
 
 
 #Authenticate a user
@@ -213,3 +213,20 @@ def create_stats(db: Session, stats: str):
             db.commit()
 
     return True
+
+
+#Get global stats
+def get_global_stats(db: Session):
+
+    game_count = db.query(models.Game).count()
+    total_kills = db.query(func.sum(models.PlayerGameStats.kills).label('total_kills')).first().total
+    total_medals =  db.query(func.sum(models.PlayerMedals.count).label('total_medals')).first().total
+    zombies_killed = db.query(func.sum(models.PlayerGameStats.zombiesKilled).lable('zombies_killed')).first().total
+
+
+    global_stats = { 'games': game_count, 
+                     'kill_count': total_kills,
+                     'medal_count': total_medals,
+                     'zombies_killed': zombies_killed }
+
+    return global_stats

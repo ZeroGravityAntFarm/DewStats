@@ -2,7 +2,7 @@ function getServers() {
     server_table = []
 
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "http://master.zgaf.io/list", false);
+    xmlHttp.open("GET", "https://stats.zgaf.io/api_v1/master", false);
     xmlHttp.onreadystatechange = function() {
 
         if (this.readyState == 4 && this.status == 200) {
@@ -22,7 +22,7 @@ function getServers() {
 
                     }
                 };
-                xmlHttp.open("GET", "http://" + server, false);
+                xmlHttp.open("GET", "https://stats.zgaf.io/api_v1/master/" + server, false);
                 xmlHttp.send();
             }
             console.log(server_table)
@@ -30,9 +30,11 @@ function getServers() {
                 data: server_table
               });
 
+            $('#serverTable').bootstrapTable('load', server_table);
+
               var classes = ["table"]
 
-              $('#serverTable').bootstrapTable('refreshOptions', {
+            $('#serverTable').bootstrapTable('refreshOptions', {
                 classes: classes.join(' ')
               })
         }
