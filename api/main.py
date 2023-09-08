@@ -13,10 +13,9 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.include_router(api_router)
-app.mount('/api', app)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.mount("/", StaticFiles(directory="static/frontend", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static/frontpage", html=True), name="static")
 add_pagination(app)
 
 app.add_middleware(

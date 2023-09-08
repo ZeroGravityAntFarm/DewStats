@@ -7,11 +7,9 @@ function getServers() {
 
         if (this.readyState == 4 && this.status == 200) {
             const servers = JSON.parse(this.response);
-            console.log(servers["result"]["servers"]);
 
             for (var i = 0; i < servers["result"]["servers"].length; i++) {
                 let server = servers["result"]["servers"][i];
-                console.log("http://" + server)
             
                 var xmlHttp = new XMLHttpRequest();
 
@@ -25,7 +23,7 @@ function getServers() {
                 xmlHttp.open("GET", "https://stats.zgaf.io/api_v1/master/" + server, false);
                 xmlHttp.send();
             }
-            console.log(server_table)
+
             $('#serverTable').bootstrapTable({
                 data: server_table
               });
