@@ -49,7 +49,7 @@ class Game(Base):
 
     #Columns
     id = Column(Integer, primary_key=True, index=True)
-    serverId = Column("Integer", ForeignKey('servers.id'))
+    serverId = Column(Integer, ForeignKey('servers.id'))
     sprintEnabled = Column(Boolean)
     sprintUnlimitedEnabled = Column(Boolean)
     maxPlayers = Column(Integer)

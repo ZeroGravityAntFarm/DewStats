@@ -219,9 +219,9 @@ def create_stats(db: Session, stats: str):
 def get_global_stats(db: Session):
 
     game_count = db.query(models.Game).count()
-    total_kills = db.query(func.sum(models.PlayerGameStats.kills).label('total_kills')).first().total
-    total_medals =  db.query(func.sum(models.PlayerMedals.count).label('total_medals')).first().total
-    zombies_killed = db.query(func.sum(models.PlayerGameStats.zombiesKilled).lable('zombies_killed')).first().total
+    total_kills = db.query(func.sum(models.PlayerGameStats.kills)).scalar()
+    total_medals =  db.query(func.sum(models.PlayerMedals.count)).scalar()
+    zombies_killed = db.query(func.sum(models.PlayerGameStats.zombiesKilled)).scalar()
 
 
     global_stats = { 'games': game_count, 
@@ -230,3 +230,27 @@ def get_global_stats(db: Session):
                      'zombies_killed': zombies_killed }
 
     return global_stats
+
+
+#Get players
+def get_players(db: Session):
+
+    players = db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID'])
+
+    return players
+
+
+def get_games(db):
+
+    game_list = []
+
+    games = db.query(models.Game).order_by(desc(models.Game.time_created)).limit(5)
+
+    for game in games:
+        server = db.query(models.Server).filter(models.Server.id == game.serverId).first()
+        setattr(game, "server", server)
+        setattr(game, "imagepath", f"/static/content/maps/small/{game.mapFile}.png")
+
+        game_list.append(game)
+
+    return game_list

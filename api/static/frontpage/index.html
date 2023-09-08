@@ -65,7 +65,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
-                                <th scope="col">Games</th>
+                                <th scope="col">Service Tag</th>
                                 <th scope="col">Wins</th>
                                 <th scope="col">Kills</th>
                                 <th scope="col">Losses</th>
@@ -73,86 +73,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for player in player_list %}
                             <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
+                                <td>{{ player.playerName }}</td>
+                                <td>{{ player.serviceTag }}</td>
+                                <td>{{ player.primaryColor }}</td>
                             </tr>
-                            <tr>
-                                <td>Jacob</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Larry the Bird</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>Mark</td>
-                                <td>145</td>
-                                <td>57</td>
-                                <td>300</td>
-                                <td>91</td>
-                                <td>268</td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -198,12 +125,12 @@
 
                 <div class="row p-4">
                     <div class="col fw-semibold">
-                        <div>1000</div>
+                        <div>{{ global_stats_games }}</div>
                         Games Played
 
                     </div>
                     <div class="col fw-semibold">
-                        <div>1000</div>
+                        <div>{{ global_stats_kills }}</div>
                         Total Kills
 
                     </div>
@@ -216,12 +143,12 @@
 
                 <div class="row p-4">
                     <div class="col fw-semibold">
-                        <div>1000</div>
+                        <div>{{ global_stats_medals }}</div>
                         Medals Issued
 
                     </div>
                     <div class="col fw-semibold">
-                        <div>1000</div>
+                        <div>{{ global_stats_zombies }}</div>
                         Zombies Killed
 
                     </div>
@@ -236,55 +163,16 @@
 
                 <div class="row p-4">
 
+                    {% for game in games %}
                     <div class="card mb-3">
-                        <img src="/static/content/maps/small/guardian.png" class="card-img-top" alt="...">
+                        <img src={{ game.imagepath}} class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h6 class="card-title">Game Variant on Map Name</h6>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
+                            <h6 class="card-title">{{ game.mapName }} on {{ game.variant }}</h6>
+                            <p class="card-text">{{ game.server.serverName}}</p>
+                            <p class="card-text"><small class="text-body-secondary">{{ game.time_created }}</small></p>
                         </div>
                     </div>
-
-                    <div class="card mb-3">
-                        <img src="/static/content/maps/small/cyberdyne.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h6 class="card-title">Game Variant on Map Name</h6>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3">
-                        <img src="/static/content/maps/small/shrine.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h6 class="card-title">Game Variant on Map Name</h6>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3">
-                        <img src="/static/content/maps/small/bunkerworld.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h6 class="card-title">Game Variant on Map Name</h6>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3">
-                        <img src="/static/content/maps/small/riverworld.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h6 class="card-title">Game Variant on Map Name</h6>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Sep 9, 2023 9:58:14 PM</small></p>
-                        </div>
-                    </div>
+                    {% endfor %}
 
                 </div>
 
