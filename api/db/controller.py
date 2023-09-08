@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from internal.auth import *
 from jose import jwt
 from sqlalchemy import or_, desc, asc, func
+from datetime import datetime
 
 
 #Authenticate a user
@@ -250,6 +251,7 @@ def get_games(db):
         server = db.query(models.Server).filter(models.Server.id == game.serverId).first()
         setattr(game, "server", server)
         setattr(game, "imagepath", f"/static/content/maps/small/{game.mapFile}.png")
+        game.time_created = game.time_created.replace(microsecond=0)
 
         game_list.append(game)
 
