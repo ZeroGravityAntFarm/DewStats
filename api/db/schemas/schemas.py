@@ -92,3 +92,12 @@ class PlayerWeaponsBase(BaseModel):
     suicidesWith: int
     headShotWith: int
     
+class PlayerLeaderboard(BaseModel):
+    playerName: str
+    clientName: str
+    serviceTag: str
+    primaryColor: str
+    playerExp: int | None = None
+    playerRank: int | None = None
+    total_kills: int | None = None
+    total_deaths: int | None = None

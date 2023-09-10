@@ -223,12 +223,17 @@ def get_global_stats(db: Session):
     total_kills = db.query(func.sum(models.PlayerGameStats.kills)).scalar()
     total_medals =  db.query(func.sum(models.PlayerMedals.count)).scalar()
     zombies_killed = db.query(func.sum(models.PlayerGameStats.zombiesKilled)).scalar()
+    humans_infected = db.query(func.sum(models.PlayerGameStats.humansInfected)).scalar()
+    friendly_fire = db.query(func.sum(models.PlayerGameStats.betrayals)).scalar()
+
 
 
     global_stats = { 'games': game_count, 
                      'kill_count': total_kills,
                      'medal_count': total_medals,
-                     'zombies_killed': zombies_killed }
+                     'zombies_killed': zombies_killed,
+                     'humans_infected':  humans_infected,
+                     'friendly_fire': friendly_fire}
 
     return global_stats
 
@@ -242,9 +247,7 @@ def get_players(db: Session):
 
 
 def get_games(db):
-
     game_list = []
-
     games = db.query(models.Game).order_by(desc(models.Game.time_created)).limit(5)
 
     for game in games:
@@ -256,3 +259,22 @@ def get_games(db):
         game_list.append(game)
 
     return game_list
+
+
+
+def get_leaderboard(db):
+    player_list = []
+    players = db.query(models.Player).order_by(desc(models.Player.playerExp))
+
+
+    for player in players:
+        total_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == player.id)
+        setattr(player, "total_kills", total_kills)
+
+        total_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == player.id)
+        setattr(player, "total_deaths", total_deaths)
+
+        player_list.append(player)
+
+
+    return player_list

@@ -61,7 +61,8 @@
             <div class="tab-content pt-4 ps-5" id="leader-board-tab-content">
                 <div class="tab-pane fade show active" id="leader-board-tab-pane" role="tabpanel"
                     aria-labelledby="leader-board-tab" tabindex="0">
-                    <table class="table table-bordered border-secondary border-opacity-25 text-center">
+                    <table data-toggle="table" id="playerTable" data-pagination="true" data-page-size="46"
+                        class="table-responsive">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -77,7 +78,6 @@
                             <tr>
                                 <td>{{ player.playerName }}</td>
                                 <td>{{ player.serviceTag }}</td>
-                                <td>{{ player.primaryColor }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -135,8 +135,8 @@
 
                     </div>
                     <div class="col fw-semibold">
-                        <div>1000</div>
-                        Flags Captured
+                        <div>{{ global_stats_humans_infected}}</div>
+                        Humans Infected
 
                     </div>
                 </div>
@@ -153,8 +153,8 @@
 
                     </div>
                     <div class="col fw-semibold">
-                        <div>1000</div>
-                        Killing Sprees
+                        <div>{{ global_stats_friendly_fire }}</div>
+                        Fratricides
 
                     </div>
                 </div>
