@@ -267,12 +267,26 @@ def get_leaderboard(db):
     players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
 
     for player in players:
-        total_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == player.id).scalar()
-        player.total_kills = total_kills
 
-        total_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == player.id).scalar()
+        #Get all the game's this player has ever played
+        player_ids = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).all()
+
+        total_kills = 0
+        total_deaths = 0
+
+        #Iterate over every match this player has played and get their kills
+        for id in player_ids:
+            id_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == id.id).scalar()
+            total_kills += id_kills
+
+            id_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == id.id).scalar()
+            total_deaths += id_deaths
+
+        #Assign kill/death values to player object
+        player.total_kills = total_kills
         player.total_deaths = total_deaths
 
+        #Calculate k/d
         try:
             kd = player.total_kills / player.total_deaths
             player.kd_ratio = round(kd, 1)
