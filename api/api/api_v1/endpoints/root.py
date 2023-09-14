@@ -24,7 +24,7 @@ def get_db():
 def root(request: Request, db: Session = Depends(get_db)):
 
     global_stats = controller.get_global_stats(db)
-    players = controller.get_players(db)
+    players = controller.get_leaderboard(db)
     games = controller.get_games(db)
 
     return templates.TemplateResponse("frontpage/index.html", {"request": request, 

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 from sqlalchemy import func
 from db.models import models
 from db.schemas import schemas
@@ -238,14 +238,14 @@ def get_global_stats(db: Session):
     return global_stats
 
 
-#Get players
+#Get players by distinct uid
 def get_players(db: Session):
-
-    players = db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID'])
+    players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
 
     return players
 
 
+#Get last 5 recent matches
 def get_games(db):
     game_list = []
     games = db.query(models.Game).order_by(desc(models.Game.time_created)).limit(5)
@@ -261,20 +261,39 @@ def get_games(db):
     return game_list
 
 
-
+#Get leaderboard
 def get_leaderboard(db):
     player_list = []
-    players = db.query(models.Player).order_by(desc(models.Player.playerExp))
-
+    players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
 
     for player in players:
-        total_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == player.id)
-        setattr(player, "total_kills", total_kills)
+        total_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == player.id).scalar()
+        player.total_kills = total_kills
 
-        total_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == player.id)
-        setattr(player, "total_deaths", total_deaths)
+        total_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == player.id).scalar()
+        player.total_deaths = total_deaths
+
+        try:
+            kd = player.total_kills / player.total_deaths
+            player.kd_ratio = round(kd, 1)
+        
+        except ZeroDivisionError:
+            player.kd_ratio = 0
 
         player_list.append(player)
 
 
     return player_list
+
+
+def get_match(db: Session, id: int):
+    players = []
+    match = db.query(models.Game).filter(models.Game.id == id).first()
+    playersLink = db.query(models.PlayersLink).filter(models.PlayersLink.gameId == id).all()
+    
+    for player in playersLink:
+        players.append(db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID']).filter(models.Player.id == player.playerId).first())
+
+    return match, players
+
+
