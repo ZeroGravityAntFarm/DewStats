@@ -13,6 +13,7 @@ import json
 
 router = APIRouter()
 
+templates = Jinja2Templates(directory="static")
 
 # Dependency
 def get_db():
@@ -27,10 +28,12 @@ def get_db():
 #Endpoint to catch game stats
 @router.get("/match/{match_id}")
 async def get_match(request: Request, match_id: int, db: Session = Depends(get_db)):
-    match = controller.get_match(db, id=match_id)
+    match_data = controller.get_match(db, id=match_id)
 
-    if not match:
+    if not match_data:
         return HTTPException(status_code=500, detail="Failed to find match")
     
     else:
-        return match
+        return templates.TemplateResponse("frontpage/match/index.html", {"request": request, 
+                                                               "match_data": match_data
+                                                               } )

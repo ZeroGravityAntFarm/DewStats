@@ -37,10 +37,11 @@ def root(request: Request, db: Session = Depends(get_db)):
                                                                "player_list": players,
                                                                "games": games} )  
 
-
+'''
 @router.get("/leaderboard")
 def leaderboard(request: Request, params: Params = Depends(), db: Session = Depends(get_db)):
 
     leaderboard = controller.get_leaderboard(db)
 
     return paginate(leaderboard, params)
+'''

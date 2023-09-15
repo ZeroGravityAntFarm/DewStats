@@ -269,7 +269,7 @@ def get_leaderboard(db):
     for player in players:
 
         #Get all the game's this player has ever played
-        player_ids = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).all()
+        player_ids = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).all()
 
         total_kills = 0
         total_deaths = 0
@@ -301,13 +301,48 @@ def get_leaderboard(db):
 
 
 def get_match(db: Session, id: int):
-    players = []
     match = db.query(models.Game).filter(models.Game.id == id).first()
+    server = db.query(models.Server).filter(models.Server.id == match.serverId).first()
     playersLink = db.query(models.PlayersLink).filter(models.PlayersLink.gameId == id).all()
     
-    for player in playersLink:
-        players.append(db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID']).filter(models.Player.id == player.playerId).first())
+    players_list = []
 
-    return match, players
+    for player in playersLink:
+        player_instance = db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID']).filter(models.Player.id == player.playerId).first()
+
+        player_data = {
+            "playerName": player_instance.playerName,
+            "serviceTag": player_instance.serviceTag,
+            "team": player_instance.team,
+            "playerIndex": player_instance.playerIndex,
+            "primaryColor": player_instance.primaryColor
+        }
+
+        players_list.append(player_data)
+
+    server = {
+        "serverName": server.serverName,
+        "serverVersion": server.serverVersion,
+        "serverPort": server.serverPort,
+        "port": server.port,
+        "hostPlayer": server.hostPlayer
+    }
+
+
+    match = {
+        "sprintEnabled": match.sprintEnabled,
+        "sprintUnlimitedEnabled": match.sprintUnlimitedEnabled,
+        "maxPlayers": match.maxPlayers,
+        "mapName": match.mapName,
+        "mapFile": match.mapFile,
+        "variant": match.variant,
+        "variantType": match.variantType,
+        "teamGame": match.teamGame,
+        "time_created": match.time_created,
+        "server": server,
+        "players": players_list
+    }
+
+    return match
 
 
