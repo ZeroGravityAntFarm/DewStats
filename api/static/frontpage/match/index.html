@@ -39,25 +39,87 @@
     </header>
 
     <div class="row">
-        <div class="col-8">
-            {{ match_data }}
-            {{ server_data }}
-            {{ player_data }}
+        <div class="col-4"></div>
+        <div class="col-4 pt-5">
+            <img src="{{ match_data.mapImage}}" class="img-fluid" alt="{{ match_data.mapName}}">
         </div>
+        <div class="col-4"></div>
     </div>
 
-    <div class="container">
-        <footer class="py-3 my-4">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="https://fileshare.zgaf.io"
-                        class="nav-link px-2 text-body-secondary">Fileshare</a></li>
-                <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Epoch 9/14/2023</a></li>
-                <li class="nav-item"><a href="https://fileshare.zgaf.io/about/"
-                        class="nav-link px-2 text-body-secondary">Join The Fight</a></li>
-            </ul>
-            <p class="text-center text-body-secondary">&copy; 2023 zgaf.io</p>
-        </footer>
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-2 d-flex align-items-stretch pt-5">
+            <div class="card mx-auto" style="width: 18rem;">
+                <!-- <img class="card-img-top" src="{{ match_data.mapImage}}" alt="{{ match_data.mapName}}"> -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ match_data.variant}} on {{ match_data.mapName}}</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Max Players: {{ match_data.maxPlayers}}</li>
+                    <li class="list-group-item">Game Type: {{ match_data.variantType}} </li>
+                    <li class="list-group-item">Time: {{ match_data.time_created }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-2 d-flex align-items-stretch pt-5">
+            <div class="card mx-auto" style="width: 18rem;">
+                <!-- <img class="card-img-top" src="/static/content/icons/server.png" alt="server"> -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ match_data.server.serverName}}</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Server Version: {{ match_data.server.serverVersion }}</li>
+                    <li class="list-group-item">Host: {{ match_data.server.hostPlayer }} </li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">{{ match_data.server.serverName }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-4"></div>
     </div>
+
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <table data-toggle="table" id="playerTable" data-pagination="true" data-page-size="46" data-search="false"
+                data-pagination-h-align="left" data-pagination-detail-h-align="right">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Service Tag</th>
+                        <th scope="col">Kills</th>
+                        <th scope="col">Deaths</th>
+                        <th scope="col">K/D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in match_data.players %}
+                    <tr>
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4"></div>
+
+        <div class="container">
+            <footer class="py-3 my-4">
+                <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                    <li class="nav-item"><a href="https://fileshare.zgaf.io"
+                            class="nav-link px-2 text-body-secondary">Fileshare</a></li>
+                    <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Epoch 9/14/2023</a></li>
+                    <li class="nav-item"><a href="https://fileshare.zgaf.io/about/"
+                            class="nav-link px-2 text-body-secondary">Join The Fight</a></li>
+                </ul>
+                <p class="text-center text-body-secondary">&copy; 2023 zgaf.io</p>
+            </footer>
+        </div>
 
 </body>
 

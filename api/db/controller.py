@@ -308,14 +308,30 @@ def get_match(db: Session, id: int):
     players_list = []
 
     for player in playersLink:
+        #Get our player object from link table
         player_instance = db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID']).filter(models.Player.id == player.playerId).first()
+
+        #Get player stats then add them to our dict
+        player_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.gameId == match.id).filter(models.PlayerGameStats.playerId == player_instance.id).scalar()
+        player_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.gameId == match.id).filter(models.PlayerGameStats.playerId == player_instance.id).scalar()
+
+        #Calculate K/D
+        try:
+            kd = player_kills / player_deaths
+            kd_ratio = round(kd, 1)
+        
+        except ZeroDivisionError:
+            kd_ratio = 0        
 
         player_data = {
             "playerName": player_instance.playerName,
             "serviceTag": player_instance.serviceTag,
             "team": player_instance.team,
             "playerIndex": player_instance.playerIndex,
-            "primaryColor": player_instance.primaryColor
+            "primaryColor": player_instance.primaryColor,
+            "playerKills": player_kills,
+            "playerDeaths": player_deaths,
+            "kdRatio": kd_ratio
         }
 
         players_list.append(player_data)
@@ -337,8 +353,10 @@ def get_match(db: Session, id: int):
         "mapFile": match.mapFile,
         "variant": match.variant,
         "variantType": match.variantType,
+        "maxPlayers": match.maxPlayers,
         "teamGame": match.teamGame,
         "time_created": match.time_created,
+        "mapImage": f"/static/content/maps/large/{match.mapFile}.jpg",
         "server": server,
         "players": players_list
     }
