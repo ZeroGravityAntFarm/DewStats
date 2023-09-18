@@ -47,4 +47,4 @@ async def get_match(request: Request, params: Params = Depends(), db: Session = 
         return HTTPException(status_code=400, detail="Failed to find matches")
     
     else:
-        return paginate(match_data, params)
+        return match_data

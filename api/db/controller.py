@@ -270,6 +270,7 @@ def get_all_games(db):
         server = db.query(models.Server).filter(models.Server.id == game.serverId).first()
         setattr(game, "server", server)
         setattr(game, "imagepath", f"/static/content/maps/small/{game.mapFile}.png")
+        setattr(game, "matchLink", f'<a href="/api_v1/match/{game.id}">{game.mapName}</a>')
         game.time_created = game.time_created.replace(microsecond=0)
 
         game_list.append(game)
@@ -323,6 +324,7 @@ def get_match(db: Session, id: int):
     
     players_list = []
     mvp_tracker = 0
+    player_mvp = "Guardians"
     
     for player in playersLink:
         #Get our player object from link table

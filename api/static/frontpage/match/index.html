@@ -113,6 +113,60 @@
                         <td>{{ player.kdRatio }}</td>
                     </tr>
                     {% endfor %}
+                    {% for player in match_data.players if player.team == 2 %}
+                    <tr class="table-success">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 3 %}
+                    <tr class="table-warning">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 4 %}
+                    <tr class="table-info">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 5 %}
+                    <tr class="table-light">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 6 %}
+                    <tr class="table-secondary">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 7 %}
+                    <tr class="table-white">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
                     {% else %}
                     {% for player in match_data.players %}
                     <tr>
