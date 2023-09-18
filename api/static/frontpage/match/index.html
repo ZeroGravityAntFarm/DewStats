@@ -57,6 +57,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Max Players: {{ match_data.maxPlayers}}</li>
                     <li class="list-group-item">Game Type: {{ match_data.variantType}} </li>
+                    <li class="list-group-item">Top Performer: {{ match_data.mvp}} </li>
                     <li class="list-group-item">Time: {{ match_data.time_created }}</li>
                 </ul>
             </div>
@@ -82,8 +83,7 @@
     <div class="row">
         <div class="col-4"></div>
         <div class="col-4">
-            <table data-toggle="table" id="playerTable" data-pagination="true" data-page-size="46" data-search="false"
-                data-pagination-h-align="left" data-pagination-detail-h-align="right">
+            <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
@@ -94,6 +94,26 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% if match_data.teamGame %}
+                    {% for player in match_data.players if player.team == 0 %}
+                    <tr class="table-primary">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for player in match_data.players if player.team == 1 %}
+                    <tr class="table-danger">
+                        <td>{{ player.playerName }}</td>
+                        <td>{{ player.serviceTag }}</td>
+                        <td>{{ player.playerKills }}</td>
+                        <td>{{ player.playerDeaths }}</td>
+                        <td>{{ player.kdRatio }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
                     {% for player in match_data.players %}
                     <tr>
                         <td>{{ player.playerName }}</td>
@@ -103,6 +123,7 @@
                         <td>{{ player.kdRatio }}</td>
                     </tr>
                     {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>

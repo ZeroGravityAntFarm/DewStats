@@ -114,7 +114,25 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
-                    tabindex="0">...</div>
+                    tabindex="0">
+                    <div class="tab-pane fade" id="match-tab-pane" role="tabpanel" aria-labelledby="match-tab"
+                        tabindex="0">
+                        <table data-toggle="table" id="matchTable" data-pagination="true" data-side-pagination="server"
+                            data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-pagination-h-align="left"
+                            data-pagination-detail-h-align="right" data-search="true"
+                            data-url="https://stats.zgaf.io/api_v1/matches">
+                            <thead>
+                                <tr>
+                                    <th data-field="mapName">Map Name</th>
+                                    <th data-field="variant">Variant</th>
+                                    <th data-field="server.serverName">Server</th>
+                                    <th data-field="server.hostPlayer">Host</th>
+                                    <th data-field="time_created">Date</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab"
                     tabindex="0">...</div>
 

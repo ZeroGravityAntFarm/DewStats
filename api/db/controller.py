@@ -261,6 +261,22 @@ def get_games(db):
     return game_list
 
 
+#Get all matches
+def get_all_games(db):
+    game_list = []
+    games = db.query(models.Game).order_by(desc(models.Game.time_created)).all()
+
+    for game in games:
+        server = db.query(models.Server).filter(models.Server.id == game.serverId).first()
+        setattr(game, "server", server)
+        setattr(game, "imagepath", f"/static/content/maps/small/{game.mapFile}.png")
+        game.time_created = game.time_created.replace(microsecond=0)
+
+        game_list.append(game)
+
+    return game_list
+
+
 #Get leaderboard
 def get_leaderboard(db):
     player_list = []
@@ -306,7 +322,8 @@ def get_match(db: Session, id: int):
     playersLink = db.query(models.PlayersLink).filter(models.PlayersLink.gameId == id).all()
     
     players_list = []
-
+    mvp_tracker = 0
+    
     for player in playersLink:
         #Get our player object from link table
         player_instance = db.query(*[c for c in models.Player.__table__.c if c.name != 'playerIp' and c.name != 'playerUID']).filter(models.Player.id == player.playerId).first()
@@ -314,6 +331,10 @@ def get_match(db: Session, id: int):
         #Get player stats then add them to our dict
         player_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.gameId == match.id).filter(models.PlayerGameStats.playerId == player_instance.id).scalar()
         player_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.gameId == match.id).filter(models.PlayerGameStats.playerId == player_instance.id).scalar()
+
+        if player_kills >= mvp_tracker:
+            mvp_tracker = player_kills
+            player_mvp = player_instance.playerName
 
         #Calculate K/D
         try:
@@ -344,7 +365,6 @@ def get_match(db: Session, id: int):
         "hostPlayer": server.hostPlayer
     }
 
-
     match = {
         "sprintEnabled": match.sprintEnabled,
         "sprintUnlimitedEnabled": match.sprintUnlimitedEnabled,
@@ -358,7 +378,8 @@ def get_match(db: Session, id: int):
         "time_created": match.time_created,
         "mapImage": f"/static/content/maps/large/{match.mapFile}.jpg",
         "server": server,
-        "players": players_list
+        "players": players_list,
+        "mvp": player_mvp
     }
 
     return match

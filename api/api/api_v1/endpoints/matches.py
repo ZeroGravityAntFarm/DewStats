@@ -9,7 +9,7 @@ from internal.limiter import limiter
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import json
+from fastapi_pagination import paginate, Page, Params
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ def get_db():
         db.close()
 
 
-#Endpoint to catch game stats
+#Endpoint to load single match
 @router.get("/match/{match_id}")
 async def get_match(request: Request, match_id: int, db: Session = Depends(get_db)):
     match_data = controller.get_match(db, id=match_id)
@@ -37,3 +37,14 @@ async def get_match(request: Request, match_id: int, db: Session = Depends(get_d
         return templates.TemplateResponse("frontpage/match/index.html", {"request": request, 
                                                                "match_data": match_data
                                                                } )
+
+#Endpoint to load all matches
+@router.get("/matches")
+async def get_match(request: Request, params: Params = Depends(), db: Session = Depends(get_db)):
+    match_data = controller.get_all_games(db)
+
+    if not match_data:
+        return HTTPException(status_code=400, detail="Failed to find matches")
+    
+    else:
+        return paginate(match_data, params)
