@@ -9,7 +9,6 @@ from jose import jwt
 from sqlalchemy import or_, desc, asc, func
 from datetime import datetime
 
-
 #Authenticate a user
 def authenticate_user(db, username: str, password: str):
     user = get_user_auth(db, username)
@@ -115,105 +114,6 @@ def update_user_password(db: Session, userPassword: int, user: str):
     db.commit()
 
     return user
-
-
-
-
-#Create Match Stats
-def create_stats(db: Session, stats: str):
-    #Check if server record exist already (Not much unique data to go by here so we filter on name and player host)
-    server = db.query(models.Server).filter(models.Server.serverName == stats["serverName"]).filter(models.Server.hostPlayer == stats["hostPlayer"]).first()
-
-    if not server:
-        #Create server record
-        server = models.Server(serverName=stats["serverName"], 
-                            serverVersion=stats["gameVersion"], 
-                            serverPort=stats["serverPort"], 
-                            port=stats["port"], 
-                            hostPlayer=stats["hostPlayer"])
-        db.add(server)
-        db.commit()
-
-    #Create match record
-    game = models.Game(serverId=server.id, 
-                       sprintEnabled=stats["game"]["sprintEnabled"], 
-                       sprintUnlimitedEnabled=stats["game"]["sprintUnlimitedEnabled"], 
-                       maxPlayers=stats["game"]["maxPlayers"], 
-                       mapName=stats["game"]["mapName"], 
-                       mapFile=stats["game"]["mapFile"], 
-                       variant=stats["game"]["variant"], 
-                       variantType=stats["game"]["variantType"], 
-                       teamGame=stats["game"]["teamGame"])
-    db.add(game)
-    db.commit()
-
-    #Iterate over players in match and create records for them if they don't already exist
-    for playerData in stats["players"]:
-        #Check if player exists already
-        player = db.query(models.Player).filter(models.Player.playerUID == playerData["uid"]).first()
-        
-        if not player:
-            #Add player info
-            player = models.Player(playerName=playerData["name"],
-                                   clientName=playerData["clientName"],
-                                   serviceTag=playerData["serviceTag"],
-                                   playerIp=playerData["ip"],
-                                   team=playerData["team"],
-                                   playerIndex=playerData["playerIndex"],
-                                   playerUID=playerData["uid"],
-                                   primaryColor=playerData["primaryColor"])
-            
-            db.add(player)
-            db.commit()
-
-
-        #Add player match stats
-        player_stats = models.PlayerGameStats(playerId=player.id, 
-                                              gameId=game.id, 
-                                              score=playerData["playerGameStats"]["score"], 
-                                              kills=playerData["playerGameStats"]["kills"], 
-                                              assists=playerData["playerGameStats"]["assists"], 
-                                              deaths=playerData["playerGameStats"]["deaths"], 
-                                              betrayals=playerData["playerGameStats"]["betrayals"], 
-                                              timeAlive=playerData["playerGameStats"]["timeSpentAlive"], 
-                                              suicides=playerData["playerGameStats"]["suicides"], 
-                                              bestStreak=playerData["playerGameStats"]["bestStreak"])
-        
-        db.add(player_stats)
-        db.commit()
-
-        #Add player id and match id to link table
-        link_table = models.PlayersLink(gameId=game.id, playerId=player.id)
-
-        db.add(link_table)
-        db.commit()
-
-        #Iterate over medals earned for our player in recent match
-        for medal in playerData["playerMedals"]:
-            medal = models.PlayerMedals(playerId=player.id, 
-                                        gameId=game.id, 
-                                        medalName=medal["medalName"], 
-                                        count=medal["count"])
-
-            db.add(medal)
-            db.commit()
-
-        #Iterate over player weapons for recent match
-        for weapon in playerData["playerWeapons"]:
-            weapon = models.PlayerWeapons(playerId=player.id, 
-                                          gameId=game.id, 
-                                          weaponName=weapon["weaponName"], 
-                                          weaponIndex=weapon["weaponIndex"], 
-                                          kills=weapon["kills"], 
-                                          killedBy=weapon["killedBy"], 
-                                          betrayalsWith=weapon["betrayalsWith"], 
-                                          suicidesWith=weapon["suicidesWith"], 
-                                          headShotsWith=weapon["headshotsWith"])
-            
-            db.add(weapon)
-            db.commit()
-
-    return True
 
 
 #Get global stats
@@ -386,4 +286,109 @@ def get_match(db: Session, id: int):
 
     return match
 
+#Return should be list of players as winners
+def getWinner(gameData):
 
+    #Get Slayer Winner
+    if gameData["game"]["variantType"] == "slayer":
+        if gameData["game"]["teamGame"]:
+            
+            #Find all teams in our game and sum their player scores
+            teams = {}
+            for player in gameData["players"]:
+                if player["team"] not in teams:
+                    teams[player["team"]] = player["playerGameStats"]["kills"]
+
+                else:
+                    teams[player["team"]] = player["playerGameStats"]["kills"] + teams[player["team"]]
+
+            win_team = max(teams, key=teams.get)
+
+            win_players = []
+            for player in gameData["players"]:
+                if player["team"] == win_team:
+                    win_players.append(player["uid"])
+
+            return win_players
+
+        else:
+            kills = 0
+            winner = []
+            for player in gameData["players"]:
+                if player["playerGameStats"]["kills"] >= kills:
+                    kills = player["playerGameStats"]["kills"]
+                    winner.append(player["uid"])
+
+            return winner
+    
+    #Get CTF Winner
+    elif gameData["game"]["variantType"] == "ctf":
+        teams = {}
+        for player in gameData["players"]:
+            if player["team"] not in teams:
+                for medal in player["playerMedals"]:
+                    if medal["medalName"] == "flag_captured":
+                        teams[player["team"]] = medal["count"]
+
+            else:
+                for medal in player["playerMedals"]:
+                    if medal["medalName"] == "flag_captured":
+                        teams[player["team"]] = medal["count"] + teams[player["team"]]
+
+        win_team = max(teams, key=teams.get)
+
+        win_players = []
+        for player in gameData["players"]:
+            if player["team"] == win_team:
+                win_players.append(player["uid"])
+
+        return win_players
+
+    elif gameData["game"]["variantType"] == "infection":
+        #Iterate over players and get sum of zombies killed
+        zombs = 0
+        winner = ""
+        for player in gameData["players"]:
+            if player["otherStats"]["zombiesKilled"] >= zombs:
+                zombs = player["otherStats"]["zombiesKilled"]
+                winner = (player["uid"])
+
+        return [winner]
+    
+    elif gameData["game"]["variantType"] == "vip":
+        if gameData["game"]["teamGame"]:
+            #This one gonna be fun
+            return
+        
+        else:
+            #This one gonna be fun
+            return
+    
+    elif gameData["game"]["variantType"] == "koth":
+        if gameData["game"]["teamGame"]:
+            return
+        
+        else:
+            #Iterate over players and find max timeControllingHill
+            return
+    
+    elif gameData["game"]["variantType"] == "oddball":
+        if gameData["game"]["teamGame"]:
+            #Iterate over teams and find team sum max score
+            return
+        
+        else:
+            #Iterate over players and find max score
+            return
+
+    elif gameData["game"]["variantType"] == "territories":
+        if gameData["game"]["teamGame"]:
+            #Iterate over teams and find team sum max score
+            return
+        
+        else:
+            #Iterate over players and find max score
+            return
+        
+    else:
+        return ['Guardians']
