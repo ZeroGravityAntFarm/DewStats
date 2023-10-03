@@ -34,7 +34,7 @@ async def get_match(request: Request, match_id: int, db: Session = Depends(get_d
         return HTTPException(status_code=500, detail="Failed to find match")
     
     else:
-        return templates.TemplateResponse("frontpage/match/index.html", {"request": request, 
+        return templates.TemplateResponse("match/index.html", {"request": request, 
                                                                "match_data": match_data
                                                                } )
 
@@ -47,4 +47,4 @@ async def get_match(request: Request, params: Params = Depends(), db: Session = 
         return HTTPException(status_code=400, detail="Failed to find matches")
     
     else:
-        return match_data
+        return paginate(match_data, params)

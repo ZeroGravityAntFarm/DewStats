@@ -27,7 +27,7 @@ def root(request: Request, db: Session = Depends(get_db)):
     players = controller.get_leaderboard(db)
     games = controller.get_games(db)
 
-    return templates.TemplateResponse("frontpage/index.html", {"request": request, 
+    return templates.TemplateResponse("index.html", {"request": request, 
                                                                "global_stats_games": global_stats["games"], 
                                                                "global_stats_kills": global_stats["kill_count"],
                                                                "global_stats_medals": global_stats["medal_count"],

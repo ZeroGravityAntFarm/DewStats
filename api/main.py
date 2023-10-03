@@ -15,7 +15,7 @@ app = FastAPI()
 app.include_router(api_router)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.mount("/static", StaticFiles(directory="static/frontpage", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static/"), name="static")
 add_pagination(app)
 
 app.add_middleware(

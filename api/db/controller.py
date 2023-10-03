@@ -145,6 +145,13 @@ def get_players(db: Session):
     return players
 
 
+#Get player by id
+def get_player(db: Session, id = int):
+    player = db.query(models.Player).filter(models.Player.id == id).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).first()
+
+    return player
+
+
 #Get last 5 recent matches
 def get_games(db):
     game_list = []
@@ -212,6 +219,9 @@ def get_leaderboard(db):
             player.kd_ratio = 0
 
         player_list.append(player)
+
+        #Sort desc by kills
+        player_list.sort(key=lambda player: player.total_kills, reverse=True)
 
 
     return player_list
