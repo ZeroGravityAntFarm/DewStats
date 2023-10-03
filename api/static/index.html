@@ -75,7 +75,8 @@
                         <tbody>
                             {% for player in player_list %}
                             <tr>
-                                <td>{{ player.playerName }}</td>
+                                <td><a href="/api_v1/player/{{ player.id}}" style="text-decoration:none">{{
+                                        player.playerName }}</a></td>
                                 <td>{{ player.serviceTag }}</td>
                                 <td>{{ player.total_kills }}</td>
                                 <td>{{ player.total_deaths }}</td>

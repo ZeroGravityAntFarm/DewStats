@@ -140,16 +140,70 @@ def get_global_stats(db: Session):
 
 #Get players by distinct uid
 def get_players(db: Session):
-    players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
+    players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("id", "playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
 
     return players
 
 
 #Get player by id
-def get_player(db: Session, id = int):
+def get_player(db: Session, id: int):
     player = db.query(models.Player).filter(models.Player.id == id).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).first()
 
     return player
+
+
+def get_player_stats(db: Session, id: int):
+    #Get our player object so we can do other queries
+    player = db.query(models.Player).filter(models.Player.id == id).first()
+
+    #Get all the game id's this player has ever played
+    player_games = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).all()
+
+    total_kills = 0
+    total_deaths = 0
+    
+    for game in player_games:
+            id_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == game.id).scalar()
+            total_kills += id_kills
+
+            id_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == game.id).scalar()
+            total_deaths += id_deaths
+
+    #Assign kill/death values to player object
+    player.total_kills = total_kills
+    player.total_deaths = total_deaths
+
+    #Calculate k/d
+    try:
+        kd = player.total_kills / player.total_deaths
+        player.kd_ratio = round(kd, 1)
+        
+    except ZeroDivisionError:
+        player.kd_ratio = 0
+
+    
+    #Get total player exp (1 exp awarded per game win, This is how trueskill assigns casual exp)
+    player_exp = db.query(func.sum(models.Player.playerExp)).filter(models.Player.playerUID == player.playerUID).scalar()
+
+    #Time player was last seen online
+    last_seen = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).order_by(models.Player.id.desc()).options(load_only("time_created")).first()
+
+    #common_server = db.query(func.count(models.Game)) 
+    #arch_nemesis = 
+    #winloss = 
+    #player_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == id.id).scalar()
+    #player_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == id.id).scalar()
+
+    #Top 5 Medals
+    #Top 5 Weapons
+    #Headshot percentage
+
+    player.playerUID = None
+    player.playerExp = player_exp
+    player.lastSeen = last_seen.time_created.replace(microsecond=0)
+
+    return player
+
 
 
 #Get last 5 recent matches

@@ -39,8 +39,8 @@
     </header>
 
     <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4 pt-5">
+        <div class="col-3"></div>
+        <div class="col-6 pt-5">
             <div class="container">
                 <div class="main-body">
 
@@ -61,31 +61,33 @@
                                         <img src="https://stats.zgaf.io/static/content/ranks/0.png" alt="Admin"
                                             class="rounded-circle" width="150">
                                         <div class="mt-3">
-                                            <h4>{{ player_data.playerName }}</h4>
+                                            <h4 style="overflow: hidden; text-overflow: ellipsis;">{{
+                                                player_data.playerName }}</h4>
                                             <p class="text-secondary mb-1">Recruit</p>
                                             <p class="text-muted font-size-sm">{{ player_data.serviceTag }}</p>
                                             <button class="btn btn-primary">Claim</button>
-                                            <button class="btn btn-outline-primary">Report</button>
+                                            <button class="btn btn-outline-danger">Report</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-8">
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <h6 class="mb-0">Last Seen</h6>
+                                            <h6 class="mb-0">Last Online</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
-                                            { last-seen-date }
+                                            {{ player_data.lastSeen }}
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <h6 class="mb-0">Commonly Found On: </h6>
+                                            <h6 class="mb-0">Commonly Plays</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
                                             { common-server }
@@ -115,10 +117,18 @@
                                             <h6 class="mb-0">Exp</h6>
                                         </div>
                                         <div class="col-sm-9 text-secondary">
-                                            { player-exp }
+                                            {{ player_data.playerExp }}
                                         </div>
                                     </div>
                                     <hr>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">K/D</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            {{ player_data.kd_ratio }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -161,6 +171,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-sm-6 mb-3">
                                     <div class="card h-100">
                                         <div class="card-body">
@@ -199,13 +210,10 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
-
-
-
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

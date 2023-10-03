@@ -28,7 +28,7 @@ def get_db():
 #Endpoint to load single player
 @router.get("/player/{player_id}")
 async def get_player(request: Request, player_id: str, db: Session = Depends(get_db)):
-    player_data = controller.get_player(db, id=player_id)
+    player_data = controller.get_player_stats(db, id=player_id)
 
     if not player_data:
         return HTTPException(status_code=500, detail="Failed to find player")
