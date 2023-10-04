@@ -152,7 +152,7 @@ def get_player(db: Session, id: int):
     return player
 
 
-def get_rank(exp):
+def get_rank(exp = 0):
     
     ranks = {"Recruit": 0, 
          "Apprentice": 2,
@@ -241,14 +241,23 @@ def get_player_stats(db: Session, id: int):
     #Get total player exp (1 exp awarded per game win, This is how trueskill assigns casual exp)
     player_exp = db.query(func.sum(models.Player.playerExp)).filter(models.Player.playerUID == player.playerUID).scalar()
 
+    if not player_exp:
+        player_exp = 0
+    
+    player_game_count = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).count()
+
+    try:
+        WinLoss = player_exp / player_game_count
+        playerWinLoss = round(WinLoss, 1)
+
+    except:
+        playerWinLoss = 0
+
     #Time player was last seen online
     last_seen = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).order_by(models.Player.id.desc()).options(load_only("time_created")).first()
 
     #common_server = db.query(func.count(models.Game)) 
     #arch_nemesis = 
-    #winloss = 
-    #player_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == id.id).scalar()
-    #player_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == id.id).scalar()
 
     #Top 5 Medals
     #Top 5 Weapons
@@ -259,6 +268,7 @@ def get_player_stats(db: Session, id: int):
     player.playerIp = None
 
     player.playerExp = player_exp
+    player.playerWinLoss = playerWinLoss
     player.playerRank, player.rankImage = get_rank(player_exp)
     player.lastSeen = last_seen.time_created.replace(microsecond=0)
 
@@ -312,7 +322,7 @@ def get_leaderboard(db):
         total_kills = 0
         total_deaths = 0
 
-        #Iterate over every match this player has played and get their kills
+        #Iterate over every match this player has played and get their kills !!!! THIS IS SO SLOW SOMEBODY HELP !!!!
         for id in player_ids:
             id_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == id.id).scalar()
             total_kills += id_kills
