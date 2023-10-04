@@ -152,16 +152,66 @@ def get_player(db: Session, id: int):
     return player
 
 
+def get_rank(exp):
+    
+    ranks = {"Recruit": 0, 
+         "Apprentice": 2,
+         "Apprentice II": 3,
+         "Private": 5,
+         "Private II": 7,
+         "Corporal": 10,
+         "Corporal II": 15,
+         "Sergeant": 20,
+         "Sergeant II": 30,
+         "Sergant III": 40,
+         "Gunnery Sergeant": 50,
+         "Gunnery Sergeant II": 60,
+         "Gunnery Sergeant III": 150,
+         "Gunnery Sergeant Master": 300,
+         "Lieutenant": 14,
+         "Lieutenant II": 15,
+         "Lieutenant III": 16,
+         "First Lieutenant": 17,
+         "Captain": 18,
+         "Captain II": 19,
+         "Captain III": 20,
+         "Staff Captain": 21,
+         "Major": 22,
+         "Major II": 23,
+         "Major III": 24,
+         "Field Major": 25,
+         "Commander": 26,
+         "Commander II": 27,
+         "Commander III": 28,
+         "Strike Commander": 29,
+         "Colonel": 30,
+         "Colonel II": 31,
+         "Colonel III": 32,
+         "Force Colonel": 33,
+         "Brigadier": 34,
+         "Brigadier II": 35,
+         "Brigadier III": 36,
+         "Brigadier General": 37,
+         "General": 38,
+         "General II": 39,
+         "General III": 40,
+         "Five Star General": 45,
+         "Engineer": 50,
+         "Architect": 75,
+         "Precursor": 100,}
+
+
 def get_player_stats(db: Session, id: int):
-    #Get our player object so we can do other queries
+    #Get our player object so we can find a uid from the player id to get the most recent player record. Yes I know this is ghetto.
     player = db.query(models.Player).filter(models.Player.id == id).first()
+    player = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).order_by(models.Player.id.desc()).first()
 
     #Get all the game id's this player has ever played
     player_games = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).all()
 
     total_kills = 0
     total_deaths = 0
-    
+
     for game in player_games:
             id_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == game.id).scalar()
             total_kills += id_kills
@@ -198,7 +248,10 @@ def get_player_stats(db: Session, id: int):
     #Top 5 Weapons
     #Headshot percentage
 
+    #Null out sensitive data as a precaution
     player.playerUID = None
+    player.playerIp = None
+
     player.playerExp = player_exp
     player.lastSeen = last_seen.time_created.replace(microsecond=0)
 

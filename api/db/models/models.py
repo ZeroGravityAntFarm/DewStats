@@ -94,6 +94,8 @@ class Player(Base):
     primaryColor = Column(String(64))
     playerExp = Column(Integer)
     playerRank = Column(Integer)
+    playerMu = Column(BigInteger)
+    playerSigma = Column(BigInteger)
 
     #Automatic Created/Updated datetime columns
     time_created = Column(DateTime(timezone=True), default=func.now())
