@@ -168,37 +168,43 @@ def get_rank(exp):
          "Gunnery Sergeant II": 60,
          "Gunnery Sergeant III": 150,
          "Gunnery Sergeant Master": 300,
-         "Lieutenant": 14,
-         "Lieutenant II": 15,
-         "Lieutenant III": 16,
-         "First Lieutenant": 17,
-         "Captain": 18,
-         "Captain II": 19,
-         "Captain III": 20,
-         "Staff Captain": 21,
-         "Major": 22,
-         "Major II": 23,
-         "Major III": 24,
-         "Field Major": 25,
-         "Commander": 26,
-         "Commander II": 27,
-         "Commander III": 28,
-         "Strike Commander": 29,
-         "Colonel": 30,
-         "Colonel II": 31,
-         "Colonel III": 32,
-         "Force Colonel": 33,
-         "Brigadier": 34,
-         "Brigadier II": 35,
-         "Brigadier III": 36,
-         "Brigadier General": 37,
-         "General": 38,
-         "General II": 39,
-         "General III": 40,
-         "Five Star General": 45,
-         "Engineer": 50,
-         "Architect": 75,
-         "Precursor": 100,}
+         "Lieutenant": 325,
+         "Lieutenant II": 350,
+         "Lieutenant III": 375,
+         "First Lieutenant": 400,
+         "Captain": 450,
+         "Captain II": 500,
+         "Captain III": 550,
+         "Staff Captain": 600,
+         "Major": 700,
+         "Major II": 800,
+         "Major III": 900,
+         "Field Major": 1200,
+         "Commander": 1400,
+         "Commander II": 1500,
+         "Commander III": 1600,
+         "Strike Commander": 1800,
+         "Colonel": 2000,
+         "Colonel II": 2200,
+         "Colonel III": 2300,
+         "Force Colonel": 2400,
+         "Brigadier": 2800,
+         "Brigadier II": 3000,
+         "Brigadier III": 3500,
+         "Brigadier General": 4000,
+         "General": 4250,
+         "General II": 4500,
+         "General III": 4750,
+         "Five Star General": 5000}
+    
+
+    for title, level in ranks.items():
+        if exp >= level:
+            player_rank = title
+            image = list(ranks).index(title)
+
+    
+    return player_rank, image
 
 
 def get_player_stats(db: Session, id: int):
@@ -253,6 +259,7 @@ def get_player_stats(db: Session, id: int):
     player.playerIp = None
 
     player.playerExp = player_exp
+    player.playerRank, player.rankImage = get_rank(player_exp)
     player.lastSeen = last_seen.time_created.replace(microsecond=0)
 
     return player
