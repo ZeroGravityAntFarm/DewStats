@@ -183,21 +183,27 @@
                     <div class="card mb-3">
                         <img src={{ game.imagepath}} class="card-img-top" alt="...">
                         <div class="card-body">
-                            <a href="/api_v1/match/{{ game.id }}" class="card-link">
-                                <h6 class="card-title">{{ game.mapName }} on {{ game.variant }}</h6>
-                            </a>
-                            <p class="card-text">{{ game.server.serverName}}</p>
-                            <p class="card-text"><small class="text-body-secondary">{{ game.time_created }}</small></p>
+                            <div class="row">
+                                <div class="col-8">
+                                    <a href="/api_v1/match/{{ game.id }}" class="card-link">
+                                        <h6 class="card-title">{{ game.mapName }} on {{ game.variant }}</h6>
+                                    </a>
+                                    <p class="card-text">{{ game.server.serverName}}</p>
+                                    <p class="card-text"><small class="text-body-secondary">{{ game.time_created
+                                            }}</small></p>
+                                </div>
+                                <div class="col-4">
+                                    <img src="/static/content/gametypes/{{ game.variantType}}.png" class="img-fluid"
+                                        alt="...">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
 
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <div class="container">
