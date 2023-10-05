@@ -6,7 +6,7 @@ from internal.auth import verify_password
 from datetime import datetime, timedelta
 from internal.auth import *
 from jose import jwt
-from sqlalchemy import or_, desc, asc, func
+from sqlalchemy import and_, desc, func, text
 from datetime import datetime
 
 #Authenticate a user
@@ -315,20 +315,8 @@ def get_leaderboard(db):
     players = db.query(models.Player).distinct(models.Player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created"))
 
     for player in players:
-
-        #Get all the game's this player has ever played
-        player_ids = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).options(load_only("playerName", "clientName", "serviceTag", "primaryColor", "playerExp", "playerRank", "time_created")).all()
-
-        total_kills = 0
-        total_deaths = 0
-
-        #Iterate over every match this player has played and get their kills !!!! THIS IS SO SLOW SOMEBODY HELP !!!!
-        for id in player_ids:
-            id_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(models.PlayerGameStats.playerId == id.id).scalar()
-            total_kills += id_kills
-
-            id_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(models.PlayerGameStats.playerId == id.id).scalar()
-            total_deaths += id_deaths
+        total_kills = db.query(func.sum(models.PlayerGameStats.kills)).filter(and_(models.PlayerGameStats.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).scalar()
+        total_deaths = db.query(func.sum(models.PlayerGameStats.deaths)).filter(and_(models.PlayerGameStats.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).scalar()
 
         #Assign kill/death values to player object
         player.total_kills = total_kills
