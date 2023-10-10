@@ -260,7 +260,11 @@ def get_player_stats(db: Session, id: int):
     #arch_nemesis = 
 
     #Top 5 Medals
+    top_medals = db.query(models.PlayerMedals.medalName, func.sum(models.PlayerMedals.count).label('total_count')).filter(and_(models.PlayerMedals.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).group_by(models.PlayerMedals.medalName).order_by(func.sum(models.PlayerMedals.count).desc()).all()
+    
     #Top 5 Weapons
+    top_weapons = db.query(models.PlayerWeapons.weaponName, func.sum(models.PlayerWeapons.kills).label('total_kills')).filter(and_(models.PlayerWeapons.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).group_by(models.PlayerWeapons.weaponName).order_by(func.sum(models.PlayerWeapons.kills).desc()).all()
+    
     #Headshot percentage
 
     #Null out sensitive data as a precaution
@@ -269,6 +273,8 @@ def get_player_stats(db: Session, id: int):
 
     player.playerExp = player_exp
     player.playerWinLoss = playerWinLoss
+    player.top_medals = top_medals
+    player.top_weapons = top_weapons
     player.playerRank, player.rankImage = get_rank(player_exp)
     player.lastSeen = last_seen.time_created.replace(microsecond=0)
 
@@ -337,6 +343,10 @@ def get_leaderboard(db):
 
 
     return player_list
+
+
+#def get_prediction(db: Session, teams):
+    
 
 
 def get_match(db: Session, id: int):

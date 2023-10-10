@@ -38,6 +38,7 @@ async def get_match(request: Request, match_id: int, db: Session = Depends(get_d
                                                                "match_data": match_data
                                                                } )
 
+
 #Endpoint to load all matches
 @router.get("/matches")
 async def get_match(request: Request, params: Params = Depends(), db: Session = Depends(get_db)):
@@ -48,3 +49,15 @@ async def get_match(request: Request, params: Params = Depends(), db: Session = 
     
     else:
         return paginate(match_data, params)
+    
+
+#Endpoint to predict wins
+@router.get("/predict")
+async def get_prediction(request: Request, db: Session = Depends(get_db)):
+    prediction = controller.predict_win(db, request.json())
+
+    if not prediction:
+        return HTTPException(status_code=400, detail="Failed to find matches")
+    
+    else:
+        return prediction
