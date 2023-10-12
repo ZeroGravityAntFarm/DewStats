@@ -266,7 +266,7 @@ def get_player_stats(db: Session, id: int):
     top_weapons = db.query(models.PlayerWeapons.weaponName, func.sum(models.PlayerWeapons.kills).label('total_kills')).filter(and_(models.PlayerWeapons.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).group_by(models.PlayerWeapons.weaponName).order_by(func.sum(models.PlayerWeapons.kills).desc()).all()
     
     #Other Aliases
-    player_aliases = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).distinct(models.Player.playerName).all()
+    player_aliases = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).distinct(models.Player.playerName).limit(10).all()
 
     #Null out sensitive data as a precaution
     player.playerUID = None
