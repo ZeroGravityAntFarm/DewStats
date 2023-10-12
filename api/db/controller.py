@@ -265,7 +265,8 @@ def get_player_stats(db: Session, id: int):
     #Top 5 Weapons
     top_weapons = db.query(models.PlayerWeapons.weaponName, func.sum(models.PlayerWeapons.kills).label('total_kills')).filter(and_(models.PlayerWeapons.playerId == models.Player.id, models.Player.playerUID == player.playerUID)).group_by(models.PlayerWeapons.weaponName).order_by(func.sum(models.PlayerWeapons.kills).desc()).all()
     
-    #Headshot percentage
+    #Other Aliases
+    player_aliases = db.query(models.Player).filter(models.Player.playerUID == player.playerUID).distinct(models.Player.playerName).all()
 
     #Null out sensitive data as a precaution
     player.playerUID = None
@@ -275,6 +276,7 @@ def get_player_stats(db: Session, id: int):
     player.playerWinLoss = playerWinLoss
     player.top_medals = top_medals
     player.top_weapons = top_weapons
+    player.aliases = player_aliases
     player.playerRank, player.rankImage = get_rank(player_exp)
     player.lastSeen = last_seen.time_created.replace(microsecond=0)
 

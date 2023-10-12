@@ -65,9 +65,13 @@
                                                 player_data.playerName }}</h4>
                                             <p class="text-secondary mb-1">{{ player_data.playerRank }}</p>
                                             <p class="text-muted font-size-sm">{{ player_data.serviceTag }}</p>
-                                            <button class="btn btn-primary">Claim</button>
-                                            <button class="btn btn-outline-danger">Report</button>
+                                            <hr>
                                         </div>
+                                        <h6 class="mb-0 pt-3">Aliases:</h6>
+                                        {% for alias in player_data.aliases %}
+                                        <p class="text-muted font-size-sm">{{ alias.playerName }}</p>
+                                        {% endfor %}
+
                                     </div>
                                 </div>
                             </div>
