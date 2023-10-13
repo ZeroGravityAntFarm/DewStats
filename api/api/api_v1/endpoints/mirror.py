@@ -34,6 +34,12 @@ def get_master():
 @router.get("/master/{server_ip}")
 def get_server(server_ip):
     server_ip = server_ip.strip("'")
-    resp = requests.get(url="http://" + server_ip)
+    
+    try:
+        resp = requests.get(url="http://" + server_ip)
 
-    return resp.json()
+        return resp.json()
+    
+    except:
+        return {}
+    

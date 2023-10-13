@@ -272,6 +272,8 @@ def get_player_stats(db: Session, id: int):
     player.playerUID = None
     player.playerIp = None
 
+    #Calculate skill from mu and sigma (0-50)
+    player.skill = player.playerMu - 3 * player.playerSigma
     player.playerExp = player_exp
     player.playerWinLoss = playerWinLoss
     player.top_medals = top_medals
