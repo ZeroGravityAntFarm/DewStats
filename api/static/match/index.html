@@ -73,7 +73,8 @@
                     <li class="list-group-item">Host: {{ match_data.server.hostPlayer }} </li>
                 </ul>
                 <div class="card-body">
-                    <a href="#" class="card-link">{{ match_data.server.serverName }}</a>
+                    <a href="/api_v1/server/{{ match_data.server.serverName }}" class="card-link">{{
+                        match_data.server.serverName }}</a>
                 </div>
             </div>
         </div>

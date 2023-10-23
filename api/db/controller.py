@@ -349,8 +349,16 @@ def get_leaderboard(db):
     return player_list
 
 
-#def get_prediction(db: Session, teams):
+def get_server(db: Session, sName: str):
+
+    try:
+        server = db.query(models.Server).filter(models.Server.serverName == sName).first()
+
+    except:
+        return {"Server not found."}
     
+
+    return server
 
 
 def get_match(db: Session, id: int):
